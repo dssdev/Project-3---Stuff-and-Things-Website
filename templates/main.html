@@ -1,0 +1,74 @@
+<html>
+<head>
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    <script type=text/javascript src="{{url_for('static', filename='jquery-2.1.3.min.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='jquery-ui.min.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='main.js') }}" defer></script>
+    <link href="{{url_for('static', filename='jquery-ui.min.css') }}" rel="stylesheet">
+    <link href="{{url_for('static', filename='main.css') }}" rel="stylesheet">
+</head>
+
+
+<body>
+	<div class='header'>
+		<h1>Stuff-n-Things</h1>
+	</div>
+
+    <div id="container">
+
+        <div id="wrapper" style="float:left; width:30%;">
+            <div id="noStuffDiv"></div>
+            <div id="stuffDiv"></div>
+        </div>
+
+        <div id="thingsDiv" style="float:left; width:60%;" class="ui-accordion-header ui-state-default ui-accordion-icons ui-corner-all">
+            {% if stuff|length != 0 %}
+                <table>
+                    <thead>
+                        <tr><th>Latest Things
+                    </thead>
+                    <tbody>
+                    {% for t in things %}
+                        <tr>
+                            <td>
+                                <p>{{t.name}} - {{t.stuff.name}}</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                        <tr>
+                            <td>
+                                <a href="{{url_for('addThings') }}">Add Things!</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div id="dialog-delete"></div>
+    <div id="dialog-update" title="Edit thing" style="display: none;">
+      <form action="/updatething" id="updateForm">
+        <fieldset>
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" value="" class="text ui-widget-content ui-corner-all">
+          <br/>
+          <label for="description">Description</label>
+          <input type="text" name="description" id="description" value="" class="text ui-widget-content ui-corner-all">
+          <br/>
+          <label for="quantity">Quantity</label>
+          <input type="number" name="quantity" id="quantity" value="" class="text ui-widget-content ui-corner-all">
+          <br/>
+          <select name="stuff_id" id="stuffSelector"></select>
+          <br/>
+          <!-- Allow form submission with keyboard without duplicating the dialog button -->
+          <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+        </fieldset>
+      </form>
+    </div>
+</body>
+
+</html>

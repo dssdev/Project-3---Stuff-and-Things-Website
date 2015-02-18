@@ -1,0 +1,34 @@
+<html>
+<head>
+	<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">-->
+	</head>
+<body>
+
+<h1>Add Thing</h1>
+
+<div class = 'pane'>
+<form action="{{ url_for('addThings')}}" method = 'post'>
+
+<dl>
+		<dd>Name: <input type ='text' size='30' name='name'></dd>
+        <dd>Description: <input type ='text' size='50' name='description'></dd>
+        <dd>Quantity: <input type ='number' size='30' name='quantity'></dd>
+</dl>
+<select name="stuff_id">
+    {% for s in stuff %}
+        <option value="{{s.id}}">{{s.name}}</option>
+    {% endfor %}
+</select>
+
+
+<input type='submit' value='Add'>
+
+</form>
+</div>
+
+</body>
+
+
+
+
+</html>
