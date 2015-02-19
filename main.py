@@ -83,7 +83,7 @@ def deleteThing():
 @app.route('/addthings', methods=['GET','POST'])
 def addThings():
     if request.method == 'POST':
-        newThing = Things(name = request.form['name'], description = request.form['description'], quantity = request.form['quantity'], stuff_id = request.form['stuff_id'])
+        newThing = Things(name = request.form['name'], description = request.form['description'], quantity = request.form['quantity'], image = request.form['base64img'], stuff_id = request.form['stuff_id'])
         session.add(newThing)
         session.commit()
         return redirect(url_for('stuff'))

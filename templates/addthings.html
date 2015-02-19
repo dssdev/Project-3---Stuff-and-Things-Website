@@ -1,6 +1,24 @@
 <html>
 <head>
 	<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">-->
+    <script>
+
+        function convertToBase64(){
+              var file    = document.querySelector('input[type=file]').files[0];
+              var hidden = document.querySelector('input[type=hidden]');
+              var reader  = new FileReader();
+              reader.addEventListener("load",function(event){
+                    document.getElementById("addThing").disabled = false;
+                    hidden.value = reader.result;
+                    console.log(reader.result);
+              });
+
+              if (file) {
+              reader.readAsDataURL(file);
+                document.getElementById("addThing").disabled = true;
+              }
+        }
+    </script>
 	</head>
 <body>
 
@@ -14,14 +32,15 @@
         <dd>Description: <input type ='text' size='50' name='description'></dd>
         <dd>Quantity: <input type ='number' size='30' name='quantity'></dd>
 </dl>
+<input type="file" onchange="storeImage()"><br>
 <select name="stuff_id">
     {% for s in stuff %}
         <option value="{{s.id}}">{{s.name}}</option>
     {% endfor %}
 </select>
 
-
-<input type='submit' value='Add'>
+<input type="hidden" name="base64img"/>
+<input type='submit' id='addThing' value='Add'>
 
 </form>
 </div>

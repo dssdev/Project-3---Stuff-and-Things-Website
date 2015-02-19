@@ -1,0 +1,13 @@
+.img-preview {
+   padding:1px;
+   border:1px solid #FF0000;
+   float: left;
+}
+
+.div-file {
+    border: 2px solid #a1a1a1;
+    padding: 10px 40px;
+    width: 50%;
+    height: 20%;
+    border-radius: 25px;
+}

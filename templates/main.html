@@ -8,6 +8,7 @@
     <script type=text/javascript src="{{url_for('static', filename='main.js') }}" defer></script>
     <link href="{{url_for('static', filename='jquery-ui.min.css') }}" rel="stylesheet">
     <link href="{{url_for('static', filename='main.css') }}" rel="stylesheet">
+    <link href="{{url_for('static', filename='forms.css') }}" rel="stylesheet">
 </head>
 
 
@@ -47,6 +48,42 @@
             {% endif %}
         </div>
 
+    </div>
+
+    <div id="dialog-add" style="display: none;">
+    <form action="{{ url_for('addThings')}}" method = 'post' class="pure-form pure-form-aligned">
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="name">Name</label>
+                <input type ='text' size='30' name='name'>
+            </div>
+            <div class="pure-control-group">
+                <label for="description">Description</label>
+                <input type ='text' size='50' name='description'>
+            </div>
+            <div class="pure-control-group">
+                <label for="quantity">Quantity</label>
+                <input type ='number' size='30' name='quantity'>
+            </div>
+            <div class="div-file" style="margin: 0 auto">
+                <input type="file" name='fileInput' onchange="convertToBase64()" style="float: left;">
+                <img src="" id="addImagePreview"/>
+            </div>
+            <br/>
+            <div style="width: 50%;margin: 10 auto;">
+                <select name="stuff_id">
+                    {% for s in stuff %}
+                        <option value="{{s.id}}">{{s.name}}</option>
+                    {% endfor %}
+                </select>
+                <input type='submit' id='addThing' value='Add'>
+            </div>
+
+
+            <input type="hidden" name="base64img"/>
+
+        </fieldset>
+    </form>
     </div>
 
     <div id="dialog-delete"></div>

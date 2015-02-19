@@ -71,8 +71,21 @@ var getThing = function(id){
     $.getJSON( "/getthing", { 'id': id}, function(data){
         console.log(data.Thing[0].description);
         $('#thingsDiv').html("<h2>" + data.Thing[0].name + "<i>(qty: " + data.Thing[0].quantity +")</i>" + "</h2></br><p>" + data.Thing[0].description + "</p>"
-                             + "<a href='\addthings'>Add </a><a href='#' id='editLink'>Edit </a><a href='#' id='deleteLink'>Delete </a>"
+                            + "<img id='thingImage' src=''/><br/>"
+                             + "<a href='\addthings' id='addLink'>Add </a><a href='#' id='editLink'>Edit </a><a href='#' id='deleteLink'>Delete </a>"
         );
+
+        $('#thingImage').attr('src',data.Thing[0].image);
+
+        var newSize = resizeImage(300,600,$('#thingImage').height(),$('#thingImage').width());
+        $('#thingImage').height(newSize.height);
+        $('#thingImage').width(newSize.width);
+
+        $('#addLink').click(function(event){
+            event.preventDefault();
+            addDialog();
+        });
+
 
         $('#deleteLink').click(function(){
             deleteDialog(id);
@@ -83,6 +96,18 @@ var getThing = function(id){
         });
     });
 };
+
+var addDialog = function(){
+    $('#dialog-add').show();
+    $('#dialog-add').dialog({
+        resizeable: false,
+        height:400,
+        width:800,
+        modal: true,
+        title: "Add New Thing"
+    });
+};
+
 
 var deleteDialog = function(id){
     console.log("del id: " + id);
@@ -179,3 +204,50 @@ var updateThing = function(thing){
 
 
 };
+
+function resizeImage(maxHeight, maxWidth, originalHeight, originalWidth){
+
+    var aspectRatio = 0;
+    var newHeight = originalHeight;
+    var newWidth = originalWidth;
+
+    if (originalHeight > originalWidth){
+        aspectRatio = originalWidth / originalHeight;
+        if (originalHeight > maxHeight){
+            newHeight = maxHeight;
+            newWidth = newHeight * aspectRatio;
+        }
+    }else{
+        aspectRatio = originalHeight / originalWidth;
+        if (originalWidth > maxWidth){
+            newWidth = maxWidth;
+            newHeight = newWidth * aspectRatio;
+        }
+    }
+
+    return {'width': newWidth, 'height': newHeight};
+
+}
+
+function convertToBase64(){
+              var file    = document.querySelector('input[type=file]').files[0];
+              var hidden = document.querySelector('input[type=hidden]');
+              var reader  = new FileReader();
+              reader.addEventListener("load",function(event){
+                    document.getElementById("addThing").disabled = false;
+                    hidden.value = reader.result;
+                    $('#addImagePreview').attr('src','');
+                    $('#addImagePreview').removeAttr('style');
+                    $('#addImagePreview').attr('src',reader.result);
+                    var newSize = resizeImage(65,65,$('#addImagePreview').height(),$('#addImagePreview').width());
+                    $('#addImagePreview').height(newSize.height);
+                    $('#addImagePreview').width(newSize.width);
+                    $('#addImagePreview').addClass('img-preview');
+                    console.log(reader.result);
+              });
+
+              if (file) {
+              reader.readAsDataURL(file);
+                document.getElementById("addThing").disabled = true;
+              }
+}
