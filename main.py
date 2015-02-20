@@ -21,7 +21,7 @@ def getAllStuffInventory():
 @app.route('/')
 def stuff():
     stuff = getAllStuff()
-    things = session.query(Things).limit(10)
+    things = session.query(Things).order_by(Things.id.desc()).limit(10)
     print(things)
     return render_template('main.html', stuff=stuff, things=things)
 
