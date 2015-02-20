@@ -60,6 +60,10 @@ var getStuff = function(){
                   posting.done(function( data ) {
                     getStuff();
                   });
+
+                  posting.fail(function(data){
+                    alert(data.responseText);
+                  });
              });
 
 

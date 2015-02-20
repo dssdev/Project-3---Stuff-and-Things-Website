@@ -1,14 +1,24 @@
 <html>
 <head>
-    <script type=text/javascript>
-        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    </script>
+
     <script type=text/javascript src="{{url_for('static', filename='jquery-2.1.3.min.js') }}"></script>
     <script type=text/javascript src="{{url_for('static', filename='jquery-ui.min.js') }}"></script>
-    <script type=text/javascript src="{{url_for('static', filename='main.js') }}" defer></script>
+    <script type=text/javascript src="{{url_for('static', filename='main.js') }}" ></script>
+    <script type=text/javascript src="{{url_for('static', filename='oauth.js') }}" ></script>
     <link href="{{url_for('static', filename='jquery-ui.min.css') }}" rel="stylesheet">
     <link href="{{url_for('static', filename='main.css') }}" rel="stylesheet">
     <link href="{{url_for('static', filename='forms.css') }}" rel="stylesheet">
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        state = '{{ STATE }}';
+        (function() {
+            var po = document.createElement('script');
+            po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://plus.google.com/js/client:plusone.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(po, s);
+          })();
+    </script>
 </head>
 
 
@@ -16,7 +26,21 @@
 	<div class='header'>
 		<h1>Stuff-n-Things</h1>
 	</div>
-
+    <div id="gConnect">
+    <button class="g-signin"
+        data-scope="https://www.googleapis.com/auth/plus.login"
+        data-requestvisibleactions="http://schemas.google.com/AddActivity"
+        data-clientId="{{ CLIENT_ID }}"
+        data-accesstype="offline"
+        data-callback="onSignInCallback"
+        data-theme="dark"
+        data-cookiepolicy="single_host_origin">
+    </button>
+  </div>
+  <div id="authOps" style="display:none">
+    <h2>User is now signed in to the app using Google+</h2>
+    <button id="disconnect" >Disconnect your Google account from this app</button>
+  </div>
     <div id="container">
 
         <div id="wrapper" style="float:left; width:30%;">
