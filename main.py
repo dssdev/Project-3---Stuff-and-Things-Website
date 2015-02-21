@@ -97,6 +97,8 @@ def updateThing():
         updateThing.quantity = request.form['quantity']
     if request.form['stuff_id']:
         updateThing.stuff_id = request.form['stuff_id']
+    if request.form['base64img']:
+        updateThing.image = request.form['base64img']
     dsession.add(updateThing)
     dsession.commit()
     return 'Success'
@@ -148,7 +150,7 @@ def connect():
   # we want the user to be able to connect and disconnect
   # without reloading the page.  Thus, for demonstration, we don't
   # implement this best practice.
-  # del session['state']
+  #del session['state']
 
   code = request.data
   print('code %s' % code)
