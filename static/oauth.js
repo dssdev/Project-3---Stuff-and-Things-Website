@@ -12,11 +12,6 @@ var helper = (function() {
      *   other authentication information.
      */
     onSignInCallback: function(authResult) {
-      //$('#authResult').html('Auth Result:<br/>');
-      //try{
-      //for (var field in authResult) {
-      //  $('#authResult').append(' ' + field + ': ' + authResult[field] + '<br/>');
-      //}}catch(error){console.log(error);}
       if (authResult['access_token']) {
         // The user is signed in
         this.authResult = authResult;
@@ -39,20 +34,10 @@ var helper = (function() {
     renderProfile: function() {
       var request = gapi.client.plus.people.get( {'userId' : 'me'} );
       request.execute( function(profile) {
-          //$('#profile').empty();
           if (profile.error) {
             $('#profile').append(profile.error);
             return;
           }
-         /* $('#profile').append(
-              $('<p><img src=\"' + profile.image.url + '\"></p>'));
-          $('#profile').append(
-              $('<p>Hello ' + profile.displayName + '!<br />Tagline: ' +
-              profile.tagline + '<br />About: ' + profile.aboutMe + '</p>'));
-          if (profile.cover && profile.coverPhoto) {
-            $('#profile').append(
-                $('<p><img src=\"' + profile.cover.coverPhoto.url + '\"></p>'));
-          }*/
         });
       $('#authOps').show('slow');
       $('#gConnect').hide();
@@ -62,11 +47,6 @@ var helper = (function() {
      */
     disconnectServer: function() {
       // Revoke the server tokens
-      /*
-     $.post('/disconnect', function(data){
-        $('#authOps').hide();
-        $('#gConnect').show();
-     });*/
 
       $.ajax({
         type: 'POST',
@@ -99,7 +79,6 @@ var helper = (function() {
         contentType: 'application/octet-stream; charset=utf-8',
         success: function(result) {
           console.log(result);
-          //helper.people();
         },
         processData: false,
         data: this.authResult.code
