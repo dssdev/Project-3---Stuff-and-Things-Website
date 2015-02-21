@@ -1,3 +1,7 @@
+/*
+Code mostly from Google's quickstart for OAuth
+*/
+
 var state = undefined;
 
 var helper = (function() {

@@ -134,7 +134,7 @@ def addThings():
         stuff = getAllStuff()
         return render_template('addthings.html', stuff=stuff)
 
-
+####### Code from Google example for OAuth ##########
 @app.route('/connect', methods=['POST'])
 def connect():
   """Exchange the one-time authorization code for a token and
