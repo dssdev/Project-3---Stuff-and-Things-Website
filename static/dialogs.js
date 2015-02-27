@@ -51,9 +51,16 @@ var addDialog = function(stuffList){
 
 var deleteDialog = function(id){
     console.log("del id: " + id);
+    var stoken;
     $('#dialog-delete').html("You're about to send this thing to the bit bucket in the sky. Are you sure?");
     $('#dialog-delete').dialog({
-          open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+          open: function(event, ui) {
+                $(".ui-dialog-titlebar-close").hide();
+                //Get static token for del POST
+                $.getJSON('/gettoken', function(response){
+                    stoken = response.Token[1];
+                });
+            },
           resizable: false,
           height:200,
           width:250,
@@ -62,7 +69,7 @@ var deleteDialog = function(id){
           buttons: {
             "Delete": function() {
               $( this ).dialog( "close" );
-              deleteThing(id);
+              deleteThing(id, stoken);
             },
             "Cancel": function() {
               $( this ).dialog( "close" );

@@ -42,13 +42,23 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 #SERVICE = build('plus', 'v1')
 
-#In the event I need to tweak this query later
+'''
+Return all the stuff items in the DB
+'''
 def getAllStuff():
     return dsession.query(Stuff).all()
 
+'''
+Return all the stuff items with a count of the number of things in the category
+'''
 def getAllStuffInventory():
     return dsession.query(Stuff.id, Stuff.name, func.count(Things.stuff_id)).outerjoin(Things).group_by(Stuff.name).all()
 
+
+'''
+Index of the site. Gets all the stuff items and the 10 newest things to render
+on the template.
+'''
 @app.route('/')
 def stuff():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)for x in xrange(32))
@@ -57,6 +67,10 @@ def stuff():
     things = dsession.query(Things).order_by(Things.id.desc()).limit(10)
     return render_template('main.html', stuff=stuff, things=things, CLIENT_ID=CLIENT_ID,STATE=state )
 
+
+'''
+Gets all the stuff along with a count of the number of things and the things in the category.
+'''
 @app.route('/_get_stuff')
 def getStuff():
     json = []
@@ -75,6 +89,9 @@ def getStuff():
 
     return jsonify(Stuff=json)
 
+'''
+Adds a new stuff item for name sent on the form
+'''
 @app.route('/addstuff', methods=['POST'])
 def addStuff():
     if session.get('credentials') is None:
@@ -84,6 +101,9 @@ def addStuff():
     dsession.commit()
     return 'Success'
 
+'''
+Update a thing - Parses the form and updates the fields for non blank items
+'''
 @app.route('/updatething', methods=['POST'])
 def updateThing():
     if session.get('credentials') is None:
@@ -103,6 +123,9 @@ def updateThing():
     dsession.commit()
     return 'Success'
 
+'''
+Returns all a things attributes based on the ID provided
+'''
 @app.route('/getthing', methods=['GET'])
 def getThing():
     id = request.args.get('id')
@@ -110,16 +133,27 @@ def getThing():
     thing = dsession.query(Things).filter(Things.id == id).all()
 
     return jsonify(Thing=[t.serialize for t in thing])
-
+'''
+Deletes a thing based on the id provided
+'''
 @app.route('/deletething', methods=['POST'])
 def deleteThing():
     if session.get('credentials') is None:
         return notLoggedIn()
+    
+    if session.get('onetimetoken') != request.form['token']:
+        #For want of a better message, regular user should never see this anyhow
+        return notLoggedIn()
+
+    del session['onetimetoken']
     thingToDelete = dsession.query(Things).filter_by(id = request.form['id']).one()
     dsession.delete(thingToDelete)
     dsession.commit()
     return 'Success'
-
+'''
+Add a new thing based on the form info if it's a post or render a template for get.
+Note: Current implementation only POSTs
+'''
 @app.route('/addthings', methods=['GET','POST'])
 def addThings():
     if session.get('credentials') is None:
@@ -133,6 +167,19 @@ def addThings():
     else:
         stuff = getAllStuff()
         return render_template('addthings.html', stuff=stuff)
+
+'''
+Token for POST authentication. Should be called before each POST request,
+but for now, we'll just do it for deletes.
+'''
+@app.route('/gettoken', methods=['GET'])
+def getToken():
+    if session.get('credentials') is None:
+        return notLoggedIn()
+    session['onetimetoken'] = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                         for x in xrange(32))
+    return jsonify(Token=('token',session['onetimetoken']))
+
 
 ####### Code from Google example for OAuth ##########
 @app.route('/connect', methods=['POST'])
